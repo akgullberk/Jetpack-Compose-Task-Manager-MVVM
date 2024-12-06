@@ -15,16 +15,18 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.example.taskmanager.ui.theme.TaskManagerTheme
 import com.example.taskmanager.uix.view.Anasayfa
 import com.example.taskmanager.uix.view.SayfaGecisleri
+import com.example.taskmanager.uix.viewmodel.AnasayfaViewModel
 import com.example.taskmanager.uix.viewmodel.GorevEklemeViewModel
 
 class MainActivity : ComponentActivity() {
     val gorevEklemeViewModel : GorevEklemeViewModel by viewModels()
+    val anasayfaViewModel : AnasayfaViewModel by viewModels()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
             TaskManagerTheme {
-                SayfaGecisleri(gorevEklemeViewModel)
+                SayfaGecisleri(gorevEklemeViewModel,anasayfaViewModel)
             }
         }
     }
