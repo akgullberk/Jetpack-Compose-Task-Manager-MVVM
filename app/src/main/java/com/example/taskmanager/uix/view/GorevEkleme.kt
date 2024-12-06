@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -25,6 +26,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.taskmanager.R
 import com.example.taskmanager.uix.viewmodel.GorevEklemeViewModel
@@ -77,21 +80,28 @@ fun GorevEkleme(navController: NavController, gorevEklemeViewModel: GorevEklemeV
             .fillMaxSize()
             .background(Color(0xFF8AA6A3))
         ) {
+
             Column(
                 modifier = Modifier
-                    .fillMaxSize(),
-                verticalArrangement = Arrangement.SpaceEvenly,
-                horizontalAlignment = Alignment.CenterHorizontally
+                    .fillMaxSize()
+                    .padding(15.dp)
+
 
             ) {
-                Text(text = "Ne Yapılacak?")
-                TextField(value = tfGorevAd.value, onValueChange = {tfGorevAd.value = it}, label = { Text(text = "Görev Ekle...")},
+                Text(
+                    text = "Ne Yapılacak?", color = Color(0xFF127369), fontWeight = FontWeight.Bold,)
+                TextField(
+                    value = tfGorevAd.value,
+                    onValueChange = {tfGorevAd.value = it},
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    label = { Text(text = "Buraya görevi girin", color = Color.White)},
                     colors = TextFieldDefaults.textFieldColors(
-                        containerColor = Color.White,
+                        containerColor = Color.Transparent,
                         focusedLabelColor = Color.Black,
-                        focusedIndicatorColor = Color.Black,
+                        focusedIndicatorColor = Color(0xFF127369),
                         unfocusedLabelColor = Color.Black,
-                        unfocusedIndicatorColor = Color.Black,
+                        unfocusedIndicatorColor = Color(0xFF127369),
                     ))
 
             }
