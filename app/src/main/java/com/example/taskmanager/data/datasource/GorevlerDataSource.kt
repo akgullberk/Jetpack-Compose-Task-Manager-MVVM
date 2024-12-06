@@ -14,6 +14,10 @@ class GorevlerDataSource(var collectionGorevler : CollectionReference) {
         collectionGorevler.document().set(yeniGorev)
     }
 
+    fun sil(gorev_id:String){
+        collectionGorevler.document(gorev_id).delete()
+    }
+
      fun gorevleriYukle() : MutableLiveData<List<Gorevler>>{
 
         collectionGorevler.addSnapshotListener { value, error ->

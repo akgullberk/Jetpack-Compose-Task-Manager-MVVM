@@ -22,4 +22,8 @@ class AnasayfaViewModel @Inject constructor(var grepo:GorevlerRepository) : View
     fun gorevleriYukle() {
         gorevlerListesi = grepo.gorevleriYukle()
     }
+
+    fun sil(gorev_id:String){
+        grepo.sil(gorev_id)
+    }
 }
