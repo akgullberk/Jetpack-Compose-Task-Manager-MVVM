@@ -22,8 +22,11 @@ import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarColors
 import androidx.compose.material3.TopAppBarDefaults
@@ -31,6 +34,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateMapOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -50,6 +54,8 @@ import com.example.taskmanager.uix.viewmodel.AnasayfaViewModel
 fun Anasayfa(navController: NavController,anasayfaViewModel: AnasayfaViewModel){
     val gorevlerListesi =  anasayfaViewModel.gorevlerListesi.observeAsState(listOf())
     val gorevDurumlari = remember { mutableStateMapOf<Int, Boolean>() }
+    val aramaYapiliyorMu = remember { mutableStateOf(false) }
+    val tf = remember { mutableStateOf("") }
 
     LaunchedEffect(key1 = true) {
         anasayfaViewModel.gorevleriYukle()
@@ -59,11 +65,43 @@ fun Anasayfa(navController: NavController,anasayfaViewModel: AnasayfaViewModel){
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(text = "Anasayfa")},
+                title = {
+                    if (aramaYapiliyorMu.value){
+                        TextField(
+                            value = tf.value,
+                            onValueChange = {
+                                tf.value = it
+                                anasayfaViewModel.ara(it)
+                            },
+                            label = { Text(text = "Ara")},
+                            colors = TextFieldDefaults.textFieldColors(
+                                containerColor = Color.Transparent,
+                                focusedLabelColor = Color.White,
+                                focusedIndicatorColor = Color.White,
+                                unfocusedLabelColor = Color.Black,
+                                unfocusedIndicatorColor = Color.White,
+                            )
+                        )
+                    }else{
+                        Text(text = "Görevler")
+                    } },
+                actions = {
+                    if (aramaYapiliyorMu.value){
+                        IconButton(onClick = {
+                            aramaYapiliyorMu.value = false
+                            tf.value = ""
+                        }) { Icon(painter = painterResource(id = R.drawable.kapat_resim), contentDescription = "") }
+                    }else{
+                        IconButton(onClick = {
+                            aramaYapiliyorMu.value = true
+                        }) { Icon(painter = painterResource(id = R.drawable.ara_resim), contentDescription = "") }
+                    }
+                },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = Color(0xFF127369),
                     titleContentColor = Color.White
-                    ))
+                )
+                )
         },
         floatingActionButton = {
             FloatingActionButton(
@@ -144,3 +182,4 @@ fun Anasayfa(navController: NavController,anasayfaViewModel: AnasayfaViewModel){
 
     }
 }
+

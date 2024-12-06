@@ -35,7 +35,30 @@ class GorevlerDataSource(var collectionGorevler : CollectionReference) {
             }
         }
 
+
+
         return gorevlerListesi
 
+    }
+
+    fun ara(aramaKelimesi:String) : MutableLiveData<List<Gorevler>> {
+        collectionGorevler.addSnapshotListener { value, error ->
+            if(value != null){
+                val liste = ArrayList<Gorevler>()
+
+                for(d in value.documents){
+                    val gorev = d.toObject(Gorevler::class.java)
+                    if(gorev != null){
+                        if(gorev.gorev_adi!!.lowercase().contains(aramaKelimesi.lowercase())){
+                            gorev.gorev_id = d.id
+                            liste.add(gorev)
+                        }
+                    }
+                }
+
+                gorevlerListesi.value = liste
+            }
+        }
+        return gorevlerListesi
     }
 }

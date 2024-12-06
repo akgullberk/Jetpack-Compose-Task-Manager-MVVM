@@ -11,4 +11,6 @@ class GorevlerRepository(var gds:GorevlerDataSource) {
      fun gorevleriYukle() : MutableLiveData<List<Gorevler>> = gds.gorevleriYukle()
 
      fun sil(gorev_id:String) = gds.sil(gorev_id)
+
+     fun ara(aramaKelimesi:String) : MutableLiveData<List<Gorevler>> = gds.ara(aramaKelimesi)
 }
