@@ -1,25 +1,37 @@
 package com.example.taskmanager.data.datasource
 
 import android.util.Log
+import androidx.lifecycle.MutableLiveData
 import com.example.taskmanager.data.entity.Gorevler
+import com.google.firebase.firestore.CollectionReference
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
-class GorevlerDataSource {
-    suspend fun kaydet(GorevAd : String){
-        Log.e("Gorev Ekleme",GorevAd)
+class GorevlerDataSource(var collectionGorevler : CollectionReference) {
+    var gorevlerListesi = MutableLiveData<List<Gorevler>>()
+    fun kaydet(GorevAd : String){
+        val yeniGorev = Gorevler("",GorevAd)
+        collectionGorevler.document().set(yeniGorev)
     }
 
-    suspend fun gorevleriYukle() : List<Gorevler> = withContext(Dispatchers.IO){
-        val gorevlerListesi = ArrayList<Gorevler>()
-        val g1 = Gorevler(1,"Odanı Topla")
-        val g2 = Gorevler(2,"Kahvaltı Hazırla")
-        val g3 = Gorevler(3,"Belgeyi Unutma")
-        gorevlerListesi.add(g1)
-        gorevlerListesi.add(g2)
-        gorevlerListesi.add(g3)
+     fun gorevleriYukle() : MutableLiveData<List<Gorevler>>{
 
-        return@withContext gorevlerListesi
+        collectionGorevler.addSnapshotListener { value, error ->
+            if(value!= null){
+                val liste = ArrayList<Gorevler>()
+
+                for(d in value.documents){
+                    val gorev = d.toObject(Gorevler::class.java)
+                    if(gorev!= null){
+                        gorev.gorev_id = d.id
+                        liste.add(gorev)
+                    }
+                }
+                gorevlerListesi.value = liste
+            }
+        }
+
+        return gorevlerListesi
 
     }
 }

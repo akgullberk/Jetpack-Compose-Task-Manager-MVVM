@@ -51,7 +51,7 @@ fun Anasayfa(navController: NavController,anasayfaViewModel: AnasayfaViewModel){
                 items(count = gorevlerListesi.value.count(),
                     itemContent = {
                         val gorev = gorevlerListesi.value[it]
-                        Text(text = gorev.gorev_adi)
+                        Text(text = gorev.gorev_adi!!)
                     }
                     )
             }

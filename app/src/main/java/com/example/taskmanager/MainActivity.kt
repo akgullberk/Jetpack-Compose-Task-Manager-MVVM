@@ -17,7 +17,9 @@ import com.example.taskmanager.uix.view.Anasayfa
 import com.example.taskmanager.uix.view.SayfaGecisleri
 import com.example.taskmanager.uix.viewmodel.AnasayfaViewModel
 import com.example.taskmanager.uix.viewmodel.GorevEklemeViewModel
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     val gorevEklemeViewModel : GorevEklemeViewModel by viewModels()
     val anasayfaViewModel : AnasayfaViewModel by viewModels()

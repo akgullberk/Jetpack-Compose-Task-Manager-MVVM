@@ -4,12 +4,15 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.taskmanager.data.entity.Gorevler
 import com.example.taskmanager.data.repo.GorevlerRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class AnasayfaViewModel : ViewModel() {
-    var grepo = GorevlerRepository()
+@HiltViewModel
+class AnasayfaViewModel @Inject constructor(var grepo:GorevlerRepository) : ViewModel() {
+
     var gorevlerListesi = MutableLiveData<List<Gorevler>>()
 
     init {
@@ -17,8 +20,6 @@ class AnasayfaViewModel : ViewModel() {
     }
 
     fun gorevleriYukle() {
-        CoroutineScope(Dispatchers.Main).launch {
-            gorevlerListesi.value = grepo.gorevleriYukle()
-        }
+        gorevlerListesi = grepo.gorevleriYukle()
     }
 }
