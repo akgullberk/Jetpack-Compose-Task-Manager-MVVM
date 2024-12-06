@@ -78,7 +78,7 @@ fun Anasayfa(navController: NavController,anasayfaViewModel: AnasayfaViewModel){
                                 containerColor = Color.Transparent,
                                 focusedLabelColor = Color.White,
                                 focusedIndicatorColor = Color.White,
-                                unfocusedLabelColor = Color.Black,
+                                unfocusedLabelColor = Color.White,
                                 unfocusedIndicatorColor = Color.White,
                             )
                         )
@@ -90,11 +90,11 @@ fun Anasayfa(navController: NavController,anasayfaViewModel: AnasayfaViewModel){
                         IconButton(onClick = {
                             aramaYapiliyorMu.value = false
                             tf.value = ""
-                        }) { Icon(painter = painterResource(id = R.drawable.kapat_resim), contentDescription = "") }
+                        }) { Icon(painter = painterResource(id = R.drawable.kapat_resim), contentDescription = "",tint = Color.White) }
                     }else{
                         IconButton(onClick = {
                             aramaYapiliyorMu.value = true
-                        }) { Icon(painter = painterResource(id = R.drawable.ara_resim), contentDescription = "") }
+                        }) { Icon(painter = painterResource(id = R.drawable.ara_resim), contentDescription = "",tint = Color.White) }
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
@@ -116,11 +116,12 @@ fun Anasayfa(navController: NavController,anasayfaViewModel: AnasayfaViewModel){
             modifier = Modifier
                 .fillMaxSize() // Sayfanın tüm alanını kaplar
                 .background(Color(0xFF8AA6A3))
+                .padding(paddingValues)
         ) {
             LazyColumn(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(paddingValues)
+
             ) {
                 items(count = gorevlerListesi.value.count()) { index ->
                     val gorev = gorevlerListesi.value[index]

@@ -12,6 +12,7 @@ class GorevlerDataSource(var collectionGorevler : CollectionReference) {
     fun kaydet(GorevAd : String){
         val yeniGorev = Gorevler("",GorevAd)
         collectionGorevler.document().set(yeniGorev)
+
     }
 
     fun sil(gorev_id:String){
