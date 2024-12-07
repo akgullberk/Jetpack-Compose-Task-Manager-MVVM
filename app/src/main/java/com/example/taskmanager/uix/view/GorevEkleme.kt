@@ -19,6 +19,7 @@ import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -27,10 +28,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.taskmanager.R
 import com.example.taskmanager.uix.viewmodel.GorevEklemeViewModel
+import com.maxkeppeler.sheets.calendar.CalendarDialog
+import com.maxkeppeler.sheets.calendar.models.CalendarSelection
+import com.maxkeppeker.sheets.core.models.base.rememberSheetState
+import com.maxkeppeler.sheets.calendar.models.CalendarConfig
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -38,6 +46,21 @@ fun GorevEkleme(navController: NavController, gorevEklemeViewModel: GorevEklemeV
     val tfGorevAd = remember {
         mutableStateOf("")
     }
+
+    val calendarState = rememberSheetState()
+
+    CalendarDialog(
+        state = calendarState,
+        config = CalendarConfig(
+            monthSelection = true,
+            yearSelection = true
+        ),
+        selection = CalendarSelection.Date{ date ->
+            Log.e("Selected Date","$date")
+
+        }
+
+    )
     fun handleFloatButtonClick(navController: NavController){
         navController.navigate("anasayfa")
         gorevEklemeViewModel.kaydet(tfGorevAd.value)
@@ -103,6 +126,13 @@ fun GorevEkleme(navController: NavController, gorevEklemeViewModel: GorevEklemeV
                         unfocusedLabelColor = Color.Black,
                         unfocusedIndicatorColor = Color(0xFF127369),
                     ))
+                
+                Button(onClick = {
+                    calendarState.show()
+
+                }) {
+
+                }
 
             }
         }
