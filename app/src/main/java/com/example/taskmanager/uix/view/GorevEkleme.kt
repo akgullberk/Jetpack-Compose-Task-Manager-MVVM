@@ -11,12 +11,14 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.BasicTextField
@@ -63,6 +65,8 @@ import com.maxkeppeler.sheets.calendar.models.CalendarSelection
 import com.maxkeppeker.sheets.core.models.base.rememberSheetState
 import com.maxkeppeler.sheets.calendar.models.CalendarConfig
 import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+import java.util.Locale
 
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -100,12 +104,20 @@ fun GorevEkleme(navController: NavController, gorevEklemeViewModel: GorevEklemeV
             monthSelection = true,
             yearSelection = true
         ),
-        selection = CalendarSelection.Date{ date ->
-            var formattedDate = date.toString()
+        selection = CalendarSelection.Date { date ->
+            val today = LocalDate.now() // Bugünün tarihi
+            val formattedDate = when (date) {
+                today.minusDays(1) -> "Dün" // Dün
+                today -> "Bugün" // Bugün
+                today.plusDays(1) -> "Yarın" // Yarın
+                else -> {
+                    // Tarihi istediğiniz formatta yazdırın
+                    val formatter = DateTimeFormatter.ofPattern("E, dd MMMM yyyy", Locale("tr", "TR"))
+                    date.format(formatter)
+                }
+            }
             cdGorevTarihi.value = formattedDate
-
         }
-
     )
     fun handleFloatButtonClick(navController: NavController){
         navController.navigate("anasayfa")
@@ -162,7 +174,7 @@ fun GorevEkleme(navController: NavController, gorevEklemeViewModel: GorevEklemeV
                     .padding(15.dp)
             ) {
                 Text(
-                    text = "Ne Yapılacak?", color = Color(0xFF127369), fontWeight = FontWeight.Bold,)
+                    text = "Ne Yapılacak?", color = Color(0xFF127369), fontWeight = FontWeight.Bold, fontSize = 18.sp)
 
 
 
@@ -171,10 +183,10 @@ fun GorevEkleme(navController: NavController, gorevEklemeViewModel: GorevEklemeV
                     onValueChange = {tfGorevAd.value = it},
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .heightIn(min = 50.dp)
+                                .heightIn(min = 32.dp)
                                 .background(Color.Transparent)
                                 .drawBehind {
-                                    val strokeWidth = 1.dp.toPx()
+                                    val strokeWidth = 2.dp.toPx()
                                     val y = size.height - strokeWidth / 2
                                     drawLine(
                                         color = Color(0xFF127369),
@@ -193,14 +205,14 @@ fun GorevEkleme(navController: NavController, gorevEklemeViewModel: GorevEklemeV
                                 },
 
                     textStyle = TextStyle(
-                        fontSize = 20.sp
-
-
+                        fontSize = 20.sp,
+                        color = Color(0xFFEEEEEE)
                     ),
                     singleLine = false, // Çok satırlı olmasını sağlıyoruz,
                     decorationBox = { innerTextField ->
                         Box(
-                            modifier = Modifier.fillMaxWidth(),
+                            modifier = Modifier.fillMaxWidth()
+                                .padding(bottom = 4.dp),
                             contentAlignment = Alignment.BottomStart // Varsayılan hizalama
                         ) {
 
@@ -208,7 +220,7 @@ fun GorevEkleme(navController: NavController, gorevEklemeViewModel: GorevEklemeV
                                 // Boşsa "Hint" göster
                                 Text(
                                     text = "Buraya görevi girin",
-                                    color = Color.DarkGray,
+                                    color = Color(0xFF616161),
                                     fontSize = 16.sp,
                                 )
                             }
@@ -218,12 +230,78 @@ fun GorevEkleme(navController: NavController, gorevEklemeViewModel: GorevEklemeV
                     },
 
                 )
-                Button(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                    ,onClick = { calendarState.show() }) {
+                
+                Spacer(modifier = Modifier.padding(30.dp))
 
-                }
+                Text(
+                    text = "Sona Erme Tarihi", color = Color(0xFF127369), fontWeight = FontWeight.Bold, fontSize = 18.sp)
+
+
+                    Row {
+                        BasicTextField(
+                            value = cdGorevTarihi.value,
+                            onValueChange = {cdGorevTarihi.value = it},
+                            modifier = Modifier
+                                .weight(1f)
+                                .heightIn(min = 32.dp)
+                                .background(Color.Transparent)
+                                .drawBehind {
+                                    val strokeWidth = 2.dp.toPx()
+                                    val y = size.height - strokeWidth / 2
+                                    drawLine(
+                                        color = Color(0xFF127369),
+                                        start = Offset(0f, y),
+                                        end = Offset(size.width, y),
+                                        strokeWidth = strokeWidth
+                                    )
+                                }
+                            ,
+                            readOnly = true,
+                            textStyle = TextStyle(
+                                fontSize = 20.sp,
+                                color = Color(0xFFEEEEEE)
+
+
+                            ),
+
+                            decorationBox = { innerTextField ->
+                                Box(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(bottom = 4.dp)
+                                        .clickable { calendarState.show() },
+                                    contentAlignment = Alignment.BottomStart // Varsayılan hizalama
+                                ) {
+
+                                    if (cdGorevTarihi.value.isEmpty()) {
+                                        // Boşsa "Hint" göster
+                                        Text(
+                                            text = "Tarih yok",
+                                            color = Color(0xFF616161),
+                                            fontSize = 16.sp,
+                                        )
+                                    }
+
+                                    innerTextField() // Gerçek metin alanı
+                                }
+                            },
+                        )
+
+                        Spacer(modifier = Modifier.width(8.dp)) // TextField ve Icon arasında boşluk
+
+                        Icon(
+                            painter = painterResource(id = R.drawable.calendar),
+                            contentDescription = "Onay ikonu",
+                            tint = Color(0xFF127369), // İkonun rengi
+                            modifier = Modifier
+                                .size(32.dp) // İkonun boyutu
+                                .clickable { calendarState.show() }
+                        )
+                    }
+
+
+
+
             }
         }
     }
