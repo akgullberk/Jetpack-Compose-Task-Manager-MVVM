@@ -1,6 +1,8 @@
 package com.example.taskmanager.uix.view
 
+import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -38,12 +40,18 @@ import com.maxkeppeler.sheets.calendar.CalendarDialog
 import com.maxkeppeler.sheets.calendar.models.CalendarSelection
 import com.maxkeppeker.sheets.core.models.base.rememberSheetState
 import com.maxkeppeler.sheets.calendar.models.CalendarConfig
+import java.time.LocalDate
 
 
+@RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun GorevEkleme(navController: NavController, gorevEklemeViewModel: GorevEklemeViewModel){
     val tfGorevAd = remember {
+        mutableStateOf("")
+    }
+
+    val cdGorevTarihi = remember{
         mutableStateOf("")
     }
 
@@ -56,14 +64,15 @@ fun GorevEkleme(navController: NavController, gorevEklemeViewModel: GorevEklemeV
             yearSelection = true
         ),
         selection = CalendarSelection.Date{ date ->
-            Log.e("Selected Date","$date")
+            var formattedDate = date.toString()
+            cdGorevTarihi.value = formattedDate
 
         }
 
     )
     fun handleFloatButtonClick(navController: NavController){
         navController.navigate("anasayfa")
-        gorevEklemeViewModel.kaydet(tfGorevAd.value)
+        gorevEklemeViewModel.kaydet(tfGorevAd.value,cdGorevTarihi.value)
 
     }
 

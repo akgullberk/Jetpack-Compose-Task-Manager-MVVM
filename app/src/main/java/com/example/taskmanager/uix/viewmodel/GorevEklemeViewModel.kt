@@ -7,12 +7,13 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.time.LocalDate
 import javax.inject.Inject
 
 @HiltViewModel
 class GorevEklemeViewModel @Inject constructor(var grepo:GorevlerRepository) : ViewModel() {
 
-    fun kaydet(GorevAd : String){
-        grepo.kaydet(GorevAd)
+    fun kaydet(GorevAd : String,gorev_tarihi: String){
+        grepo.kaydet(GorevAd,gorev_tarihi)
     }
 }

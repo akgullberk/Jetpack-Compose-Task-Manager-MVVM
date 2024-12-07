@@ -6,11 +6,12 @@ import com.example.taskmanager.data.entity.Gorevler
 import com.google.firebase.firestore.CollectionReference
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import java.time.LocalDate
 
 class GorevlerDataSource(var collectionGorevler : CollectionReference) {
     var gorevlerListesi = MutableLiveData<List<Gorevler>>()
-    fun kaydet(GorevAd : String){
-        val yeniGorev = Gorevler("",GorevAd)
+    fun kaydet(GorevAd : String,gorev_tarihi: String){
+        val yeniGorev = Gorevler("",GorevAd,gorev_tarihi)
         collectionGorevler.document().set(yeniGorev)
 
     }
