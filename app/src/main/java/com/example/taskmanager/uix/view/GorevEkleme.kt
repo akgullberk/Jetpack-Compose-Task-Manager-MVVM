@@ -125,9 +125,7 @@ fun GorevEkleme(navController: NavController, gorevEklemeViewModel: GorevEklemeV
 
     }
 
-    fun Int.toDp(): Dp {
-        return (this / Resources.getSystem().displayMetrics.density).dp
-    }
+
 
     Scaffold(
         topBar = {

@@ -1,10 +1,12 @@
 package com.example.taskmanager
 
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -38,6 +40,7 @@ import dagger.hilt.android.AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     val gorevEklemeViewModel : GorevEklemeViewModel by viewModels()
     val anasayfaViewModel : AnasayfaViewModel by viewModels()
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -49,38 +52,6 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-fun AnasayfaPreview() {
-    Box(modifier = Modifier.fillMaxSize()) {
-        Anasayfa() // Burada kendi composable'ınızı çağırabilirsiniz.
-    }
-}
-
-@Composable
-fun Anasayfa(){
-    Card(modifier = Modifier
-        .fillMaxWidth()
-        .padding(8.dp),
-    )  {
-        Row(modifier = Modifier
-            .padding(8.dp)
-            .fillMaxWidth(),
-
-
-            ) {
-            Button(onClick = {  },
-                modifier = Modifier.size(20.dp),
-                colors = ButtonDefaults.buttonColors(Color.Transparent),
-                shape = RectangleShape,
-                border = BorderStroke(2.dp, Color.Gray)) {
-
-            }
-
-            Text(text = "dsadsad")
-        }
-    }
-}
 
 
 

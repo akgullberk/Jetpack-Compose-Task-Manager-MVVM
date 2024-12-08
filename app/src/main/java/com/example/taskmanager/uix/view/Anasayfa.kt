@@ -152,7 +152,8 @@ fun Anasayfa(navController: NavController,anasayfaViewModel: AnasayfaViewModel){
                     Card(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(8.dp),
+                            .padding(8.dp)
+
                     ) {
                         Row(
                             modifier = Modifier
