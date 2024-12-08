@@ -48,6 +48,9 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.taskmanager.R
 import com.example.taskmanager.uix.viewmodel.AnasayfaViewModel
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -57,10 +60,14 @@ fun Anasayfa(navController: NavController,anasayfaViewModel: AnasayfaViewModel){
     val aramaYapiliyorMu = remember { mutableStateOf(false) }
     val tf = remember { mutableStateOf("") }
 
-    LaunchedEffect(key1 = true) {
+
+    fun handlefon(){
         anasayfaViewModel.gorevleriYukle()
-        //Anasayfaya geri dönüldüğünde çalışır.
+        aramaYapiliyorMu.value = false
+        tf.value = ""
     }
+
+
 
     Scaffold(
         topBar = {
@@ -90,10 +97,11 @@ fun Anasayfa(navController: NavController,anasayfaViewModel: AnasayfaViewModel){
                         IconButton(onClick = {
                             aramaYapiliyorMu.value = false
                             tf.value = ""
-                        }) { Icon(painter = painterResource(id = R.drawable.kapat_resim), contentDescription = "",tint = Color.White) }
+                        }) { Icon(painter = painterResource(id = R.drawable.kapat_resim), contentDescription = "",tint = Color.White, modifier = Modifier.clickable { handlefon()  }) }
                     }else{
                         IconButton(onClick = {
                             aramaYapiliyorMu.value = true
+                            anasayfaViewModel.gorevleriYukle()
                         }) { Icon(painter = painterResource(id = R.drawable.ara_resim), contentDescription = "",tint = Color.White) }
                     }
                 },
@@ -127,6 +135,20 @@ fun Anasayfa(navController: NavController,anasayfaViewModel: AnasayfaViewModel){
                     val gorev = gorevlerListesi.value[index]
                     val isStriked = gorevDurumlari[index] ?: false // Varsayılan olarak çizili değil
 
+                    // Tarih kontrolü
+                    val currentDate = Calendar.getInstance().time
+                    val dateFormat = SimpleDateFormat("EEE, dd MMMM yyyy", Locale("tr", "TR"))
+                    val gorevTarihi = try {
+                        dateFormat.parse(gorev.gorev_tarihi ?: "")
+                    } catch (e: Exception) {
+                        Log.e("DateParseError", "Tarih parse edilemedi: ${gorev.gorev_tarihi}")
+                        null
+                    }
+
+                    val isPast = gorevTarihi?.before(currentDate) ?: false
+                    Log.d("TarihKontrol", "Görev: ${gorev.gorev_adi}, Tarih: ${gorev.gorev_tarihi}, Geçmiş mi: $isPast")
+
+
                     Card(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -142,7 +164,7 @@ fun Anasayfa(navController: NavController,anasayfaViewModel: AnasayfaViewModel){
 
 
                         ) {
-                            val buttonColor = if (isStriked) Color(0xFF8AA6A3) else Color.Transparent
+                            val buttonColor = if (isStriked) Color(0xFF8AA6A3)  else Color.Transparent
 
                             Button(
                                 onClick = {
@@ -159,18 +181,27 @@ fun Anasayfa(navController: NavController,anasayfaViewModel: AnasayfaViewModel){
 
                             Spacer(modifier = Modifier.width(8.dp))
 
-                            Text(
-                                text = gorev.gorev_adi ?: "",
-                                modifier = Modifier.weight(1f),
-                                textDecoration = if (isStriked) TextDecoration.LineThrough else TextDecoration.None // Çizili mi kontrolü
-                            )
+                            Column(modifier = Modifier.weight(1f),) {
+                                Text(
+                                    text = gorev.gorev_adi ?: "",
+                                    textDecoration = if (isStriked) TextDecoration.LineThrough else TextDecoration.None, // Çizili mi kontrolü
+                                    color = Color.Black
+                                )
+
+                                Text(text = gorev.gorev_tarihi ?: "",
+                                    fontSize = 12.sp,
+                                    color = if (isPast) Color.Red else if (gorev.gorev_tarihi == "Dün") Color.Red else Color(0xFF127369) // Tarihe göre renk
+                                )
+                            }
+
 
 
 
                             Icon(painter = painterResource(id = R.drawable.kapat_resim),
                                 contentDescription ="",
                                 modifier = Modifier
-                                    .clickable { anasayfaViewModel.sil(gorev.gorev_id!!)
+                                    .clickable {
+                                        anasayfaViewModel.sil(gorev.gorev_id!!)
                                     }
                                     .size(25.dp)
                             )

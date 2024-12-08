@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import com.example.taskmanager.data.entity.Gorevler
 import com.google.firebase.firestore.CollectionReference
+import com.google.firebase.firestore.Query
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.time.LocalDate
@@ -11,7 +12,7 @@ import java.time.LocalDate
 class GorevlerDataSource(var collectionGorevler : CollectionReference) {
     var gorevlerListesi = MutableLiveData<List<Gorevler>>()
     fun kaydet(GorevAd : String,gorev_tarihi: String){
-        val yeniGorev = Gorevler("",GorevAd,gorev_tarihi)
+        val yeniGorev = Gorevler("",GorevAd,gorev_tarihi,timestamp = System.currentTimeMillis())
         collectionGorevler.document().set(yeniGorev)
 
     }
@@ -22,7 +23,9 @@ class GorevlerDataSource(var collectionGorevler : CollectionReference) {
 
      fun gorevleriYukle() : MutableLiveData<List<Gorevler>>{
 
-        collectionGorevler.addSnapshotListener { value, error ->
+        collectionGorevler
+            .orderBy("timestamp", Query.Direction.DESCENDING)  // Verileri timestamp alanına göre sıralıyoruz
+            .addSnapshotListener { value, error ->
             if(value!= null){
                 val liste = ArrayList<Gorevler>()
 
@@ -44,7 +47,9 @@ class GorevlerDataSource(var collectionGorevler : CollectionReference) {
     }
 
     fun ara(aramaKelimesi:String) : MutableLiveData<List<Gorevler>> {
-        collectionGorevler.addSnapshotListener { value, error ->
+        collectionGorevler
+            .orderBy("timestamp", Query.Direction.DESCENDING)  // Verileri timestamp alanına göre sıralıyoruz
+            .addSnapshotListener { value, error ->
             if(value != null){
                 val liste = ArrayList<Gorevler>()
 
