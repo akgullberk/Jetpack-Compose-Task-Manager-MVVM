@@ -27,5 +27,9 @@ fun SayfaGecisleri(gorevEklemeViewModel: GorevEklemeViewModel,anasayfaViewModel:
             GorevEkleme(navController,gorevEklemeViewModel)
         }
 
+        composable("gorevGuncelleme"){
+            GorevGuncelleme(navController)
+        }
+
     }
 }

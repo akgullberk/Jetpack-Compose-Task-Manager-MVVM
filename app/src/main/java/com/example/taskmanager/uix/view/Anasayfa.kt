@@ -47,6 +47,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.taskmanager.R
+import com.example.taskmanager.uix.components.FloatButton
 import com.example.taskmanager.uix.viewmodel.AnasayfaViewModel
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -112,12 +113,7 @@ fun Anasayfa(navController: NavController,anasayfaViewModel: AnasayfaViewModel){
                 )
         },
         floatingActionButton = {
-            FloatingActionButton(
-                onClick = { navController.navigate("gorevEkleme") },
-                content = {
-                    Icon(painter = painterResource(id = R.drawable.ekle_resim), contentDescription = "")
-                }
-            )
+            FloatButton(onClick = {navController.navigate("gorevEkleme")}, iconResId =R.drawable.ekle_resim)
         },
     ) { paddingValues ->
         Box(
@@ -153,6 +149,7 @@ fun Anasayfa(navController: NavController,anasayfaViewModel: AnasayfaViewModel){
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(8.dp)
+                            .clickable { navController.navigate("gorevGuncelleme") }
 
                     ) {
                         Row(

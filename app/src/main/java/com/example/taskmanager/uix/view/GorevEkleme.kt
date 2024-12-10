@@ -59,6 +59,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.taskmanager.R
+import com.example.taskmanager.uix.components.FloatButton
+import com.example.taskmanager.uix.components.GorevTextField
+import com.example.taskmanager.uix.components.TarihTextField
+import com.example.taskmanager.uix.components.TaskActionTopBar
 import com.example.taskmanager.uix.viewmodel.GorevEklemeViewModel
 import com.maxkeppeler.sheets.calendar.CalendarDialog
 import com.maxkeppeler.sheets.calendar.models.CalendarSelection
@@ -74,7 +78,6 @@ import java.util.Locale
 @Composable
 fun GorevEkleme(navController: NavController, gorevEklemeViewModel: GorevEklemeViewModel){
 
-
     val tfGorevAd = remember {
         mutableStateOf("")
     }
@@ -83,20 +86,7 @@ fun GorevEkleme(navController: NavController, gorevEklemeViewModel: GorevEklemeV
         mutableStateOf("")
     }
 
-
-
     val calendarState = rememberSheetState()
-
-    val textState = remember { mutableStateOf("") }
-
-    // Text'in stilini belirleme
-    val textStyle = TextStyle(fontSize = 16.sp)
-
-    // TextHeight'i dinamik olarak güncellemek için
-    val textHeight = remember { mutableStateOf(0.dp) }
-
-    // LocalDensity ile piksel ölçümlerine dönüştürme işlemi
-    val density = LocalDensity.current
 
     CalendarDialog(
         state = calendarState,
@@ -125,36 +115,16 @@ fun GorevEkleme(navController: NavController, gorevEklemeViewModel: GorevEklemeV
 
     }
 
-
-
     Scaffold(
         topBar = {
-            TopAppBar(title = { Text(text = "Görev Ekleme") },
-                colors = TopAppBarDefaults.topAppBarColors(
-                containerColor = Color(0xFF127369),
-                titleContentColor = Color.White,
-
-            ),
-                navigationIcon = {
-                    IconButton(onClick = { navController.navigate("anasayfa") }) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.geri_oku), // Burada ikonunuzu belirtin
-                            contentDescription = "Menu Icon",
-                            tint = Color.White // İkon rengi
-                        )
-                    }
-                },
-
+            TaskActionTopBar(
+                title = "Görev Ekleme",
+                navController = navController,
+                navigationDestination = "anasayfa"
             )
-
         },
         floatingActionButton = {
-            FloatingActionButton(
-                onClick = { handleFloatButtonClick(navController) },
-                content = {
-                    Icon(painter = painterResource(id = R.drawable.check), contentDescription = "")
-                }
-            )
+            FloatButton(onClick = {handleFloatButtonClick(navController)}, iconResId = R.drawable.check)
         }
 
     ) { paddingValues ->
@@ -165,141 +135,26 @@ fun GorevEkleme(navController: NavController, gorevEklemeViewModel: GorevEklemeV
             .background(Color(0xFF8AA6A3))
         ) {
 
-
             Column(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(15.dp)
             ) {
                 Text(
-                    text = "Ne Yapılacak?", color = Color(0xFF127369), fontWeight = FontWeight.Bold, fontSize = 18.sp)
-
-
-
-                BasicTextField(
-                    value = tfGorevAd.value,
-                    onValueChange = {tfGorevAd.value = it},
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .heightIn(min = 32.dp)
-                                .background(Color.Transparent)
-                                .drawBehind {
-                                    val strokeWidth = 2.dp.toPx()
-                                    val y = size.height - strokeWidth / 2
-                                    drawLine(
-                                        color = Color(0xFF127369),
-                                        start = Offset(0f, y),
-                                        end = Offset(size.width, y),
-                                        strokeWidth = strokeWidth
-                                    )
-                                }
-                                .onGloballyPositioned { coordinates ->
-                                    // Metnin yüksekliğini hesaplamak için
-                                    val height = with(density) {
-                                        // Text'in satır sayısını alıp, yükseklik hesaplaması yapıyoruz
-                                        textStyle.fontSize.toPx() * textState.value.lines().size
-                                    }
-                                    textHeight.value = height.dp
-                                },
-
-                    textStyle = TextStyle(
-                        fontSize = 20.sp,
-                        color = Color(0xFFEEEEEE)
-                    ),
-                    singleLine = false, // Çok satırlı olmasını sağlıyoruz,
-                    decorationBox = { innerTextField ->
-                        Box(
-                            modifier = Modifier.fillMaxWidth()
-                                .padding(bottom = 4.dp),
-                            contentAlignment = Alignment.BottomStart // Varsayılan hizalama
-                        ) {
-
-                            if (tfGorevAd.value.isEmpty()) {
-                                // Boşsa "Hint" göster
-                                Text(
-                                    text = "Buraya görevi girin",
-                                    color = Color(0xFF616161),
-                                    fontSize = 16.sp,
-                                )
-                            }
-
-                            innerTextField() // Gerçek metin alanı
-                        }
-                    },
-
+                    text = "Ne Yapılacak?",
+                    color = Color(0xFF127369),
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 18.sp
                 )
-                
+
+                GorevTextField(value = tfGorevAd.value, onValueChange = {tfGorevAd.value = it}, hint = "Buraya görevi girin")
+
                 Spacer(modifier = Modifier.padding(30.dp))
 
                 Text(
                     text = "Sona Erme Tarihi", color = Color(0xFF127369), fontWeight = FontWeight.Bold, fontSize = 18.sp)
 
-
-                    Row {
-                        BasicTextField(
-                            value = cdGorevTarihi.value,
-                            onValueChange = {cdGorevTarihi.value = it},
-                            modifier = Modifier
-                                .weight(1f)
-                                .heightIn(min = 32.dp)
-                                .background(Color.Transparent)
-                                .drawBehind {
-                                    val strokeWidth = 2.dp.toPx()
-                                    val y = size.height - strokeWidth / 2
-                                    drawLine(
-                                        color = Color(0xFF127369),
-                                        start = Offset(0f, y),
-                                        end = Offset(size.width, y),
-                                        strokeWidth = strokeWidth
-                                    )
-                                }
-                            ,
-                            readOnly = true,
-                            textStyle = TextStyle(
-                                fontSize = 20.sp,
-                                color = Color(0xFFEEEEEE)
-
-
-                            ),
-
-                            decorationBox = { innerTextField ->
-                                Box(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .padding(bottom = 4.dp)
-                                        .clickable { calendarState.show() },
-                                    contentAlignment = Alignment.BottomStart // Varsayılan hizalama
-                                ) {
-
-                                    if (cdGorevTarihi.value.isEmpty()) {
-                                        // Boşsa "Hint" göster
-                                        Text(
-                                            text = "Tarih yok",
-                                            color = Color(0xFF616161),
-                                            fontSize = 16.sp,
-                                        )
-                                    }
-
-                                    innerTextField() // Gerçek metin alanı
-                                }
-                            },
-                        )
-
-                        Spacer(modifier = Modifier.width(8.dp)) // TextField ve Icon arasında boşluk
-
-                        Icon(
-                            painter = painterResource(id = R.drawable.calendar),
-                            contentDescription = "Onay ikonu",
-                            tint = Color(0xFF127369), // İkonun rengi
-                            modifier = Modifier
-                                .size(32.dp) // İkonun boyutu
-                                .clickable { calendarState.show() }
-                        )
-                    }
-
-
-
-
+                TarihTextField(value = cdGorevTarihi.value, onValueChange = {cdGorevTarihi.value = it}, hint ="Tarih yok", onClick = {calendarState.show()})
             }
         }
     }
